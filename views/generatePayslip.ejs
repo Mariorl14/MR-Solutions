@@ -1,0 +1,160 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+  #salary{
+    display: none;
+  }
+</style>
+<script>
+  $(document).ready(function() {
+    $("#employeeName").change(function() {
+      var employeeName = $(this).val();
+
+      // Make an AJAX call to fetch the employee number and email and populate the select and input fields
+      $.ajax({
+        type: "POST",
+        url: "/getEmployeeNumberAndEmail",
+        data: { employeeName: employeeName },
+        success: function(data) {
+          var employeeNumberSelect = $("#employeeNumber");
+          var employeeEmailInput = $("#employeeEmail");
+          var employeeSalary = $("#salary");
+          var codigoEmpleado = $("#codigoEmpleado");
+          
+
+          // Populate the select options with the employee numbers and set the email input value
+          $.each(data, function(key, value) {
+            employeeNumberSelect.append("<option value='" + value.telefono + "'>" + value.telefono + "</option>");
+            employeeEmailInput.append("<option value='" + value.user + "'>" + value.user + "</option>");
+            employeeSalary.append("<option value='" + value.salario + "'>" + value.salario + "</option>");
+            codigoEmpleado.append("<option value='" + value.codigoEmpleado + "'>" + value.codigoEmpleado + "</option>");
+          });
+
+          // Automatically select the first option
+          
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    });
+  });
+</script>
+
+
+
+<div class="container py-5 h-100">
+  <div class="row justify-content-center align-items-center h-100">
+    <div class="col-12 col-lg-9 col-xl-7">
+      <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+        <div class="card-body p-4 p-md-5">
+          <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Generar Reporte de Pago</h3>
+          <form action="/generatePayslip" method="POST">
+
+
+            <div class="row">
+              <div class="col-md-6 col-sm-12 mb-4">
+                <div class="form-outline">
+                  <select class="select form-control-lg" id="employeeName" name="employeeName" required>
+                    <option value="" disabled>Vendedor</option>
+                    <% for(var count = 0; count < data.length; count++) { %>
+                    <option value="<%= data[count].nombre %>"><%= data[count].nombre %></option>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div class="form-outline">
+                  <input type="text" id="consecutivo" name="consecutivo" class="form-control form-control-lg" required/>
+                  <label class="form-user" for="consecutivo">Consecutivo</label>
+                </div>
+
+
+              </div>
+              <div class="col-md-6 mb-4">
+
+                <div class="form-outline">
+                  <input type="text" id="horas" name="horas" class="form-control form-control-lg" required/>
+                  <label class="form-user" for="horas">Dias Trabajados</label>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div class="form-outline datepicker w-100">
+                <input type="text" class="form-control form-control-lg" id="horasExtra" name="horasExtra" required/>
+                <label for="horasExtra" class="form-label">Horas Extra</label>
+              </div>
+
+
+              </div>
+              <div class="col-md-6 mb-4">
+
+                
+                <div class="form-outline datepicker w-100">
+                  <input type="text" class="form-control form-control-lg" id="bono" name="bono" required/>
+                  <label for="bono" class="form-label">Bono</label>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div class="form-outline datepicker w-100">
+                <input type="date" class="form-control form-control-lg" id="fechaPago" name="fechaPago" required/>
+                <label for="fechaPago" class="form-label">Fecha de Pago</label>
+              </div>
+
+
+              </div>
+              <div class="col-md-6 mb-4">
+
+                
+                <div class="form-outline datepicker w-100">
+                  <input type="text" class="form-control form-control-lg" id="totalVentas" name="totalVentas" required/>
+                  <label for="totalVentas" class="form-label">Total de Ventas</label>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+              <div class="form-outline">
+                <select class="select form-control-lg" id="employeeNumber" name="employeeNumber" required>
+                  <option value="" disabled>Seleccione un número</option>
+                </select>
+                <label class="form-user" for="horas">Numero Trabajador</label>
+              </div>
+
+              <div class="form-outline">
+                <select class="select form-control-lg" id="employeeEmail" name="employeeEmail" required>
+                  <option value="" disabled>Seleccione un número</option>
+                </select>
+                <label class="form-user" for="horas">Correo Trabajador</label>
+              </div>
+              <div class="form-outline">
+                <select class="select form-control-lg" id="salary" name="salary" required>
+                  <option value="" disabled>Seleccione un número</option>
+                </select>
+                <label class="form-user"id="salary" for="horas">Salario Trabajador</label>
+              </div>
+
+              <div class="form-outline">
+                <select class="select form-control-lg" id="codigoEmpleado" name="codigoEmpleado" required>
+                  <option value="" disabled>Seleccione un número</option>
+                </select>
+                <label class="form-user"id="salary" for="horas">Codigo Trabajador</label>
+              </div>
+
+            </div>
+
+            <div class="mt-4 pt-2">
+              <input class="btn btn-primary btn-lg" type="submit" value="Generar" />
+            </div>
+
+            <div class="row">
